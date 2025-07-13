@@ -62,6 +62,7 @@ class P(Tag):
 
 @route('logar')
 def logar():
+
     data = read(Input(id='login'), Input(id='password'))
     values = tuple(item.value for item in data.get())
     log = ''

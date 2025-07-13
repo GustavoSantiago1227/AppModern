@@ -23,7 +23,9 @@ class Api:
         self.data = {'data': data}
 
     def get_data(self):
-        return self.data
+        data = self.data
+        self.data = None
+        return data
 
     def get_window(self):
         return webview.windows[0]
@@ -91,7 +93,7 @@ class Api:
         func()
 
     def console(self, msg):
-        print(msg[0])
+        print(msg)
 
     def loading(self):
         window = self.get_window()

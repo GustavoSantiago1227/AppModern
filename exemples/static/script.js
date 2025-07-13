@@ -1,22 +1,37 @@
 
 /**
+ * Cria e insere dinamicamente elementos HTML com base nos dados recebidos do Python.
+ * Os elementos sao registrados na estrutura de componentes local.
+ */
+async function create() {
+    try {
+        let data = await window.pywebview.api.get_data();
+        if (data) {
+        render(data.data);
+        }
+    } catch (error) {
+        msg('Erro ao carregar elemento no DOM:', error);
+    }
+    
+}
+
+
+
+
+/**
  * Cria dinamicamente os elementos da seção <head> da página,
  * utilizando os dados iniciais enviados pelo backend Python via PyWebView.
  */
 async function loading_head() {
     try {
         const data = await window.pywebview.api.get_data();
-        
-        if (data && data.data && data.data[0] && data.data[0].children) {
+        if (data) {
             render(data.data[0].children);
-            msg('Cabeçalho carregado com sucesso!');
         } else {
             msg('Não existem elementos para adicionar no <head>!');
         }
-        
     } catch (error) {
-        msg('Erro ao carregar elementos do <head>:');
-        msg(error);
+        msg('Erro ao carregar elementos do <head>:', error);
     }
 }
 
@@ -29,10 +44,9 @@ async function loading_head() {
  * @param {Array} data - Lista de objetos contendo os dados dos elementos a serem criados.
  */
 function render(data) {
-    console.log(data);
     data.forEach(element => {
         new CreateElement(
-            document.head,
+            element.parent,
             element.element,
             element.attributes,
             element.children
@@ -83,16 +97,21 @@ class CreateElement {
      */
     createChildren(element) {
         try {
-            new CreateElement(
+            if (typeof element === 'string' || typeof element === 'number') {
+                this.element.innerText += element;
+            }
+            else{
+                new CreateElement(
                 this.element,
                 element.element,
                 element.attributes,
                 element.children
             );
-        } catch (error) {
-            if (typeof element === 'string' || typeof element === 'number') {
-                this.element.innerText += element;
             }
+            
+        } catch (error) {
+            msg('Erro ao criar filho de ' + this.element, error);
+            
         }
     }
 
@@ -129,8 +148,9 @@ class CreateElement {
  *
  * @param {string} msg - Mensagem a ser enviada ao console Python.
  */
-function msg(msg) {
+function msg(msg, error) {
     window.pywebview.api.console(msg);
+    window.pywebview.api.console(`${error}`);
 }
 
 
@@ -141,10 +161,8 @@ function msg(msg) {
  */
 window.addEventListener('pywebviewready', function () {
     try {
-        msg('Comunicação bem-sucedida!');
         window.pywebview.api.loading();
     } catch (error) {
-        msg('Falha na comunicação com o backend!');
-        msg(error);
+        msg('Falha na comunicação com o backend!', error);
     }
 });
