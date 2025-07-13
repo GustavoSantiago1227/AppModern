@@ -40,8 +40,8 @@ class Api:
         window = self.get_window()
         window.evaluate_js('del()')
 
-    def read(self, *args):
-        self.insert_components(*args) # Prepara os componentes para o JS filtrar/ler
+    def read(self, *args, filter):
+        self.data = {'data': {'args': list(args), 'filter': filter}}
         window = self.get_window()
 
         self._read_event.clear() # Limpa o evento antes de fazer a chamada

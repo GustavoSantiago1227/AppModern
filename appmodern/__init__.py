@@ -1,5 +1,4 @@
 from .api import Api
-from .components import Data
 api = Api()
 
 
@@ -21,9 +20,9 @@ def delete(*args):
 
 
 # A função read de nível superior (appmodern)
-def read(*args):
+def read(*args, filter=['value', 'text', 'html']): #style também aceita
     # Chama o método read da sua instância de API, que agora espera pelo resultado do JS
-    return Data(api.read(*args)) # Assumindo que 'api' é a instância da sua classe Api
+    return api.read(*args, filter=filter) # Assumindo que 'api' é a instância da sua classe Api
 
 
 def update(*args):

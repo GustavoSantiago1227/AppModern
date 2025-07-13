@@ -150,26 +150,3 @@ class Body(Tag):
 
 
 
-class Item:
-    def __init__(self, value):
-        self.id = value.get('id')
-        self.class_ = value.get('class')
-        self.name = value.get('name')
-        self.element = value.get('element')
-        self.value = value.get('value')
-        self.text = value.get('text')
-        self.html = value.get('html')
-
-
-
-class Data:
-    def __init__(self, data):
-        self.data = [Item(value) for value in data['data']]
-
-    def get(self):
-        return self.data
-
-
-
-
-

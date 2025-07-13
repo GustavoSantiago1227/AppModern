@@ -62,24 +62,10 @@ class P(Tag):
 
 @route('logar')
 def logar():
-    data = read(Input(id='login'), Input(id='password'))
-    values = tuple(item.value for item in data.get())
-    log = ''
-    if values != ('gustavo', '123'):
-        log = 'Senha ou login incorreto'
-    else:
-        log = 'Logado'
-
-    paragraph = read(P())
-    if len(paragraph.get()) > 0:
-        update((P('#div-login'), P('#div-login', log)))
-    else:
-        create(P('#div-login', log))
-
-    update(
-        (Input('#div-login', id="login"), Input('#div-login', id="login", value='')),
-        (Input('#div-login', id="password"), Input('#div-login', id="password", value=''))
-    )
+    data = read( 'input', filter=['value'])
+    login, password = data['data']
+    print(f'login: {login}')
+    print(f'Password: {password}')
 
 
 
@@ -93,7 +79,7 @@ def home_page():
                 Input(None, type="text", id='login')),
             Label(None, "Password",
                 Input(None, type="password", id='password')),
-            Button(None, "Logar", onclick='call("logar"'),
+            Button(None, "Logar", onclick='call("logar")'),
             id='div-login',
         )
     )

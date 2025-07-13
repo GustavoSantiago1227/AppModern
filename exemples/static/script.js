@@ -1,15 +1,49 @@
 
 /**
- * Executa uma rota registrada via PyWebView, disparando a função Python correspondente.
- *
- * @param {string} function_route - Nome da rota a ser acionada no backend.
- * @param {Array} args_list - Lista de argumentos posicionais a serem passados para a função.
- * @param {Object} kwargs - Objeto contendo os argumentos nomeados (keyword arguments).
+ * L� elementos do DOM com base nos dados recebidos do backend,
+ * filtra e envia o resultado de volta para o Python.
  */
-function call(function_route, args_list = [], kwargs = {}) {
-    window.pywebview.api.route_exec(function_route, args_list, kwargs);
+async function read() {
+    // Solicita ao backend os crit�rios de busca para os elementos
+    const data = await window.pywebview.api.get_data();
+    let values = selectElement(data.data.args, data.data.filter);
+    // Envia os dados extra�dos de volta ao Python para manipula��o posterior
+    window.pywebview.api.read_callback({ data: values});
 }
 
+
+
+function filterValuesFromElement(element, filter) {
+    let values = [];
+     const map = {
+        value: element => element.value ?? null,
+        text: element => element.innerText,
+        html: elementel => element.innerHTML,
+        style: element => element.getAttribute('style') ?? ''
+    };
+
+    return filter.map(key => map[key]?.(element) ?? null);
+}
+
+
+
+function selectElement(args, filter) {
+    var data = [];
+    args.forEach(arg => {
+        let query = document.querySelectorAll(arg);
+        if (query && query.length > 0) {
+            query.forEach(elements => {
+            data.push(filterValuesFromElement(elements, filter));
+            });
+        }
+        else{
+            msg('Nenhum elemento foi selecionado em:', arg);
+        }
+    });
+
+    console.log(data);
+    return data;
+}
 
 
 /**
@@ -26,6 +60,18 @@ async function create() {
         msg('Erro ao carregar elemento no DOM:', error);
     }
     
+}
+
+
+/**
+ * Executa uma rota registrada via PyWebView, disparando a função Python correspondente.
+ *
+ * @param {string} function_route - Nome da rota a ser acionada no backend.
+ * @param {Array} args_list - Lista de argumentos posicionais a serem passados para a função.
+ * @param {Object} kwargs - Objeto contendo os argumentos nomeados (keyword arguments).
+ */
+function call(function_route, args_list = [], kwargs = {}) {
+    window.pywebview.api.route_exec(function_route, args_list, kwargs);
 }
 
 
