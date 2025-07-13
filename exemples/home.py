@@ -1,5 +1,5 @@
 from appmodern.components import Tag
-from appmodern import route, create, read, update
+from appmodern import route, create, read, update, delete, call
 
 class Div(Tag):
     def __init__(self, parent='body', *children, **kwargs):
@@ -60,12 +60,23 @@ class P(Tag):
     pass
 
 
+@route('bem-vindo')
+def bem_vindo(nome):
+    delete('#div-login')
+
+
+
+
 @route('logar')
 def logar():
     data = read( 'input', filter=['value'])
     login, password = data['data']
-    print(f'login: {login}')
-    print(f'Password: {password}')
+    if login[0] == 'gustavo' and password[0] == '123':
+        call('bem-vindo', [login[0]])
+    else:
+        data = read('p')
+        if not data['data']:
+            create(P('#div-login', 'Login ou senha incorretos'))
 
 
 

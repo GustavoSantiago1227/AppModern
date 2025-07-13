@@ -36,7 +36,7 @@ class Api:
         window.evaluate_js('create()')
 
     def delete(self, *args):
-        self.insert_components(*args)
+        self.data = {'data': list(args)}
         window = self.get_window()
         window.evaluate_js('del()')
 

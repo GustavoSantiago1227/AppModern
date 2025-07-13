@@ -1,12 +1,33 @@
 
 /**
+ * Remove elementos do DOM com base nos dados recebidos do backend.
+ * Atualiza o armazenamento local dos componentes ap�s a exclus�o.
+ */
+async function del() {
+    let data = await window.pywebview.api.get_data();
+    if (data.data) {
+        data.data.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => el.remove()); // remove cada elemento do DOM
+         });
+    }else{
+        msg('Não tem nenhum conteudo para deletar em: ', data);
+    }
+}
+
+
+
+
+
+
+/**
  * L� elementos do DOM com base nos dados recebidos do backend,
  * filtra e envia o resultado de volta para o Python.
  */
 async function read() {
     // Solicita ao backend os crit�rios de busca para os elementos
     const data = await window.pywebview.api.get_data();
-    let values = selectElement(data.data.args, data.data.filter);
+    let values = selectElementFilter(data.data.args, data.data.filter);
     // Envia os dados extra�dos de volta ao Python para manipula��o posterior
     window.pywebview.api.read_callback({ data: values});
 }
@@ -27,7 +48,10 @@ function filterValuesFromElement(element, filter) {
 
 
 
-function selectElement(args, filter) {
+
+
+
+function selectElementFilter(args, filter) {
     var data = [];
     args.forEach(arg => {
         let query = document.querySelectorAll(arg);

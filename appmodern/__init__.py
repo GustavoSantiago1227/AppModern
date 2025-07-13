@@ -2,6 +2,10 @@ from .api import Api
 api = Api()
 
 
+def call(name, arg_list = [], kwargs_dict = {}):
+    api.route_exec(name, arg_list, kwargs_dict)
+
+
 def route(name):
     """Decorador para registrar funções como rotas nomeadas."""
     def decorator(func):
