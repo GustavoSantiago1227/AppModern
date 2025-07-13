@@ -81,16 +81,16 @@ class Api:
         window = self.get_window()
         window.evaluate_js('update()')
 
-
-
-
-
-    def route_exec(self, name):
+    def route_exec(self, function_name, args_list=None, kwargs=None):
         """Executa a função associada a uma rota registrada."""
-        func = self.routes.get(name)
+        args_list = args_list or []
+        kwargs = kwargs or {}
+
+        func = self.routes.get(function_name)
         if not func:
-            raise ValueError(f"Rota '{name}' não registrada.")
-        func()
+            raise ValueError(f"Rota '{function_name}' não registrada.")
+
+        return func(*args_list, **kwargs)
 
     def console(self, msg):
         print(msg)

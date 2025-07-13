@@ -5,11 +5,11 @@ api = Api()
 
 def route(name):
     """Decorador para registrar funções como rotas nomeadas."""
-
     def decorator(func):
+        if not hasattr(api, 'routes'):
+            api.routes = {}
         api.routes[name] = func
         return func
-
     return decorator
 
 

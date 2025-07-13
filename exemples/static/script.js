@@ -1,5 +1,18 @@
 
 /**
+ * Executa uma rota registrada via PyWebView, disparando a função Python correspondente.
+ *
+ * @param {string} function_route - Nome da rota a ser acionada no backend.
+ * @param {Array} args_list - Lista de argumentos posicionais a serem passados para a função.
+ * @param {Object} kwargs - Objeto contendo os argumentos nomeados (keyword arguments).
+ */
+function call(function_route, args_list = [], kwargs = {}) {
+    window.pywebview.api.route_exec(function_route, args_list, kwargs);
+}
+
+
+
+/**
  * Cria e insere dinamicamente elementos HTML com base nos dados recebidos do Python.
  * Os elementos sao registrados na estrutura de componentes local.
  */

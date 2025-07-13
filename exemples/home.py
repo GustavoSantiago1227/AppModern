@@ -62,7 +62,6 @@ class P(Tag):
 
 @route('logar')
 def logar():
-
     data = read(Input(id='login'), Input(id='password'))
     values = tuple(item.value for item in data.get())
     log = ''
@@ -86,6 +85,7 @@ def logar():
 
 @route('home')
 def home_page():
+
     create(
         Div('body',
             H1(None, 'Login'),
@@ -93,7 +93,7 @@ def home_page():
                 Input(None, type="text", id='login')),
             Label(None, "Password",
                 Input(None, type="password", id='password')),
-            Button(None, "Logar", onclick='call("logar")'),
+            Button(None, "Logar", onclick='call("logar"'),
             id='div-login',
         )
     )
