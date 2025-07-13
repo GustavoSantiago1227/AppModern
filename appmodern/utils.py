@@ -33,7 +33,7 @@ def create_file(path, data):
         path (str): Caminho onde o arquivo será criado.
         data (str): Conteúdo que será escrito no arquivo.
     """
-    with open(path, 'w') as f:
+    with open(path, 'w', encoding='utf-8') as f:
         f.write(data)
 
 

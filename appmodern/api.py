@@ -90,7 +90,8 @@ class Api:
             raise ValueError(f"Rota '{name}' não registrada.")
         func()
 
-
+    def console(self, msg):
+        print(msg[0])
 
     def loading(self):
         window = self.get_window()
