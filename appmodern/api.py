@@ -67,10 +67,10 @@ class Api:
     def insert_components_in_tuple(self, *components):
         data = []
         for components_to_update in components:
-            before, after = components_to_update
+            target, element = components_to_update
             data.append(
-                {'before': before.get_data(),
-                 'after': after.get_data(),
+                {'target': target,
+                 'element': element.get_data(),
                  },
             )
         self.data = {'data': data}

@@ -1,4 +1,50 @@
 
+
+
+
+class UpdateElements {
+    constructor(target, element) {
+        this.origin_elements = document.querySelectorAll(target);
+        let createElement = new CreateElement(element.parent, element.element, element.attributes, element.children, false);
+        this.updateElement = createElement.element;
+        this.origin_elements.forEach(originElement => {
+            this.clone(originElement, this.updateElement);
+        });
+    }
+
+    clone(originElement, updateElement) {
+        // Limpa atributos antigos se necessário (opcional)
+        while(originElement.attributes.length > 0) {
+            originElement.removeAttribute(originElement.attributes[0].name);
+        }
+
+        // Copia apenas os atributos definidos no novo elemento
+        for (let attr of updateElement.attributes) {
+            originElement.setAttribute(attr.name, attr.value);
+
+            if (attr.name === 'value' && (originElement.tagName === 'INPUT' || originElement.tagName === 'TEXTAREA')) {
+                originElement.value = attr.value;
+            }
+        }
+
+        // Substitui o conteúdo interno de forma eficiente
+        originElement.innerHTML = updateElement.innerHTML;
+    }
+}
+
+
+
+async function update() {
+    let data = await window.pywebview.api.get_data();
+    if (data) {
+        data.data.forEach(element => {
+            const updateElements = new UpdateElements(element.target, element.element);
+        });
+    }
+}
+
+
+
 /**
  * Remove elementos do DOM com base nos dados recebidos do backend.
  * Atualiza o armazenamento local dos componentes ap�s a exclus�o.
@@ -64,8 +110,6 @@ function selectElementFilter(args, filter) {
             msg('Nenhum elemento foi selecionado em:', arg);
         }
     });
-
-    console.log(data);
     return data;
 }
 
