@@ -113,7 +113,6 @@ def logar():
 
 @route('home')
 def home_page():
-
     create(
         Div('body',
             H1(None, 'Login'),
