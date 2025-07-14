@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="appmodern",
-    version="0.1.0",
+    version="0.2.0",
     author="Gustavo Felipe Felix Santiago",  # Substitua pelo seu nome
     author_email="gustavosantiago1227@gmail.com",  # Substitua pelo seu email
     description="Uma biblioteca para criar aplicações visuais com Python e tecnologias web.",
