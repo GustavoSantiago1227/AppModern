@@ -1,8 +1,5 @@
 from appmodern.app import App
-from appmodern.components import StyleExternal
+from appmodern.components import StyleExternal, ScriptExternal
 import exemples.home
-app = App(title="Login", debug=True, lang='pt-br')
-app.head.add_childrens(
-    StyleExternal('style.css')
-)
+app = App(title="Login", debug=False, lang='pt-br')
 app.run()

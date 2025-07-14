@@ -1,5 +1,5 @@
 class Tag:
-    def __init__(self, parent='body', *childrens, **attrs):
+    def __init__(self, parent='body', *children, **attrs):
         """
         Classe base para representação de uma tag HTML genérica, com suporte à composição hierárquica.
 
@@ -27,12 +27,12 @@ class Tag:
 
         self.attributes = {}
         self.update_attributes(**attrs)
-        self.childrens = []
-        self.add_childrens(*childrens)
+        self.children = []
+        self.add_children(*children)
 
-    def add_childrens(self, *childrens):
+    def add_children(self, *children):
         """Adiciona elementos filhos à tag atual."""
-        self.childrens += list(childrens)
+        self.children += list(children)
 
     def update_attributes(self, **attrs):
         """
@@ -56,14 +56,14 @@ class Tag:
             'parent': self.parent,
             'element': self.element,
             'attributes': self.attributes,
-            'childrens': []
+            'children': []
         }
 
-        for children in self.childrens:
+        for children in self.children:
             if isinstance(children, Tag):
-                data['childrens'].append(children.get_data())
+                data['children'].append(children.get_data())
             else:
-                data['childrens'].append(children)
+                data['children'].append(children)
 
         return data
 
@@ -83,7 +83,7 @@ class Tag:
             if key == 'attributes':
                 for attr, val in value.items():
                     print(f'  Atributo: {attr} -> {val}')
-            elif key == 'childrens':
+            elif key == 'children':
                 for child in value:
                     if isinstance(child, dict):
                         print(f"  Filho: {child.get('element', 'texto')}")
@@ -111,13 +111,13 @@ class StyleExternal(Tag):
 
 
 class Meta(Tag):
-    def __init__(self, parent='head', *childrens, **attrs):
-        super().__init__(parent, *childrens, **attrs)
+    def __init__(self, parent='head', *children, **attrs):
+        super().__init__(parent, *children, **attrs)
 
 
 class Title(Tag):
-    def __init__(self, parent='head', *childrens, **attrs):
-        super().__init__(parent, *childrens, **attrs)
+    def __init__(self, parent='head', *children, **attrs):
+        super().__init__(parent, *children, **attrs)
 
 
 
@@ -130,14 +130,11 @@ class Head(Tag):
     Inicializa com metadados padrão, incluindo charset, viewport e título da página.
     Permite inclusão de elementos adicionais como scripts, links e estilos.
     """
-    def __init__(self, title=None, *childrens):
-        default_childrens = [
-            Meta('head', charset='UTF-8'),
-            Meta('head', None, name='viewport', content="width=device-width, initial-scale=1.0"),
-            Title('head', title)
-        ]
-        default_childrens += list(childrens)
-        super().__init__('html', *default_childrens)
+    def __init__(self, title=None):
+        super().__init__('html',
+    Meta('head', charset='UTF-8'),
+            Meta('head',  name='viewport', content="width=device-width, initial-scale=1.0"),
+            Title('head', title))
 
 
 
@@ -146,32 +143,9 @@ class Body(Tag):
     """
     Representa a seção <body> do documento HTML, contendo todo o conteúdo visível da página.
     """
-    def __init__(self, *childrens, **attrs):
-        super().__init__('html', *childrens, **attrs)
+    def __init__(self, *children, **attrs):
+        super().__init__('html', *children, **attrs)
         self.element = 'body'
-
-
-
-
-class Item:
-    def __init__(self, value):
-        self.id = value.get('id')
-        self.class_ = value.get('class')
-        self.name = value.get('name')
-        self.element = value.get('element')
-        self.value = value.get('value')
-        self.text = value.get('text')
-        self.html = value.get('html')
-
-
-
-class Data:
-    def __init__(self, data):
-        self.data = [Item(value) for value in data['data']]
-
-    def get(self):
-        return self.data
-
 
 
 

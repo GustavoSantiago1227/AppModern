@@ -23,7 +23,9 @@ class Api:
         self.data = {'data': data}
 
     def get_data(self):
-        return self.data
+        data = self.data
+        self.data = None
+        return data
 
     def get_window(self):
         return webview.windows[0]
@@ -34,12 +36,12 @@ class Api:
         window.evaluate_js('create()')
 
     def delete(self, *args):
-        self.insert_components(*args)
+        self.data = {'data': list(args)}
         window = self.get_window()
         window.evaluate_js('del()')
 
-    def read(self, *args):
-        self.insert_components(*args) # Prepara os componentes para o JS filtrar/ler
+    def read(self, *args, filter):
+        self.data = {'data': {'args': list(args), 'filter': filter}}
         window = self.get_window()
 
         self._read_event.clear() # Limpa o evento antes de fazer a chamada
@@ -65,10 +67,10 @@ class Api:
     def insert_components_in_tuple(self, *components):
         data = []
         for components_to_update in components:
-            before, after = components_to_update
+            target, element = components_to_update
             data.append(
-                {'before': before.get_data(),
-                 'after': after.get_data(),
+                {'target': target,
+                 'element': element.get_data(),
                  },
             )
         self.data = {'data': data}
@@ -79,18 +81,19 @@ class Api:
         window = self.get_window()
         window.evaluate_js('update()')
 
-
-
-
-
-    def route_exec(self, name):
+    def route_exec(self, function_name, args_list=None, kwargs=None):
         """Executa a função associada a uma rota registrada."""
-        func = self.routes.get(name)
+        args_list = args_list or []
+        kwargs = kwargs or {}
+
+        func = self.routes.get(function_name)
         if not func:
-            raise ValueError(f"Rota '{name}' não registrada.")
-        func()
+            raise ValueError(f"Rota '{function_name}' não registrada.")
 
+        return func(*args_list, **kwargs)
 
+    def console(self, msg):
+        print(msg)
 
     def loading(self):
         window = self.get_window()

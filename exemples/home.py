@@ -1,6 +1,6 @@
 from appmodern.components import Tag
-from appmodern import route, create, read, update
-
+from appmodern import route, create, read, update, delete, call
+from time import sleep
 class Div(Tag):
     def __init__(self, parent='body', *children, **kwargs):
         style = kwargs.pop("style", "") + """
@@ -21,6 +21,9 @@ class H1(Tag):
     def __init__(self, parent='body', *children, **kwargs):
         style = kwargs.pop("style", "") + "margin-bottom: 24px; color: #333;"
         super().__init__(parent, *children, style=style, **kwargs)
+
+class H2(Tag):
+    pass
 
 class Label(Tag):
     def __init__(self, parent='body', *children, **kwargs):
@@ -59,27 +62,52 @@ class Button(Tag):
 class P(Tag):
     pass
 
+class H1(Tag):
+    pass
+
+
+@route('bem-vindo')
+def bem_vindo(nome, segs):
+    print(segs)
+    if segs == 5:
+        delete('#div-login')
+        create(Div('body',
+                   H1(None, 'Seja Bem-vindo'),
+                   P(None, f'{nome}, o programa ficará pronto em {segs}s'),
+                   id="div-bem-vindo"
+                   )
+               )
+        bem_vindo(nome, segs - 1)
+    elif segs > 0:
+        sleep(1)
+        update(('p',  P(None, f'{nome}, o programa ficará pronto em {segs}s')))
+        bem_vindo(nome, segs - 1)
+    else:
+        update(
+            ('div#div-bem-vindo',
+                 Div(
+                     None,
+                     H1(None, "Logado com sucesso"),
+                  P(None, f"{nome}, seja muito bem vindo ao novo"),
+                 id="div-bem-vindo"),
+             )
+        )
+        create(H2('#div-bem-vindo', "AppModern"))
+
+
+
+
 
 @route('logar')
 def logar():
-    data = read(Input(id='login'), Input(id='password'))
-    values = tuple(item.value for item in data.get())
-    log = ''
-    if values != ('gustavo', '123'):
-        log = 'Senha ou login incorreto'
+    data = read( 'input', filter=['value'])
+    login, password = data['data']
+    if login[0] == 'gustavo' and password[0] == '123':
+        call('bem-vindo', [login[0], 5])
     else:
-        log = 'Logado'
-
-    paragraph = read(P())
-    if len(paragraph.get()) > 0:
-        update((P('#div-login'), P('#div-login', log)))
-    else:
-        create(P('#div-login', log))
-
-    update(
-        (Input('#div-login', id="login"), Input('#div-login', id="login", value='')),
-        (Input('#div-login', id="password"), Input('#div-login', id="password", value=''))
-    )
+        data = read('p')
+        if not data['data']:
+            create(P('#div-login', 'Login ou senha incorretos'))
 
 
 

@@ -59,4 +59,6 @@ venv.bak/
 
 # IDE files
 .idea/
-.vscode/
+.vscode/exemples/static/script_old.js
+exemples/static/script_old.js
+exemples/static/script_old.js
